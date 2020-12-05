@@ -20,11 +20,6 @@ export default class CreateTableUsers1607034965752
             default: "uuid_generate_v4()",
           },
           {
-            name: "company_id",
-            type: "uuid",
-            isNullable: false,
-          },
-          {
             name: "name",
             type: "varchar",
             isNullable: false,
@@ -52,13 +47,57 @@ export default class CreateTableUsers1607034965752
         ],
       })
     );
+    await queryRunner.createTable( new Table({
+      name: 'users_companies_companies',
+      columns: [
+        {
+          name: 'id',
+          type: 'uuid',
+          generationStrategy: 'uuid',
+          isPrimary: true,
+          default: 'uuid_generate_v4()'
+        },
+        {
+          name: 'usersId',
+          type: 'uuid',
+          isNullable: false,
+        },
+        {
+          name: 'companiesId',
+          type: 'uuid',
+          isNullable: false,
+        },
+        {
+          name: "created_at",
+          type: "timestamp",
+          default: "now()",
+        },
+        {
+          name: "updated_at",
+          type: "timestamp",
+          default: "now()",
+        },
+      ]
+    }))
+
     await queryRunner.createForeignKey(
-      "users",
+      "users_companies_companies",
       new TableForeignKey({
-        name: "companyUser",
+        name: "userId",
+        referencedColumnNames: ["id"],
+        referencedTableName: "users",
+        columnNames: ["usersId"],
+        onDelete: "SET NULL",
+        onUpdate: "CASCADE",
+      })
+    );
+    await queryRunner.createForeignKey(
+      "users_companies_companies",
+      new TableForeignKey({
+        name: "companyId",
         referencedColumnNames: ["id"],
         referencedTableName: "companies",
-        columnNames: ["company_id"],
+        columnNames: ["companiesId"],
         onDelete: "SET NULL",
         onUpdate: "CASCADE",
       })
@@ -66,7 +105,9 @@ export default class CreateTableUsers1607034965752
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropForeignKey("users", "companyUser");
+    await queryRunner.dropForeignKey("users_companies_companies", "companyId");
+    await queryRunner.dropForeignKey("users_companies_companies", "userId");
+    await queryRunner.dropTable("users_companies_companies");
     await queryRunner.dropTable("users");
   }
 }

@@ -6,4 +6,5 @@ export default interface ICompanyRepository {
   FindByCNPJ(cnpj: number): Promise<Company | undefined>;
   FindById(id: string): Promise<Company | undefined>;
   save(data: Company): Promise<Company>;
+  FindByIds(ids: string[]): Promise<Company[]>;
 }

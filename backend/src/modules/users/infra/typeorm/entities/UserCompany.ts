@@ -1,31 +1,21 @@
-import Company from "@modules/companies/infra/typeorm/entities/Company";
 import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinTable,
-  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 
-@Entity("users")
+@Entity("users_companies")
 class User {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
   @Column()
-  name: string;
+  company_id: string;
 
   @Column()
-  email: string;
-
-  @Column()
-  password: string;
-
-  @ManyToMany(()=>Company, company=> company.id)
-  @JoinTable()
-  companies: Company[];
+  user_id: string;
 
   @CreateDateColumn()
   created_at: Date;

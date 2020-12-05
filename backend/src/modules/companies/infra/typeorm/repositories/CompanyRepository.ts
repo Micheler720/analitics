@@ -1,6 +1,6 @@
-import ICompanyCreateDTO from "@modules/company/dtos/ICompanyCreateDTO";
-import ICompanyRepository from "@modules/company/repositories/ICompanyRepository";
-import { getRepository, Repository } from "typeorm";
+import ICompanyCreateDTO from "@modules/companies/dtos/ICompanyCreateDTO";
+import ICompanyRepository from "@modules/companies/repositories/ICompanyRepository";
+import { getRepository, In, Repository, SelectQueryBuilder } from "typeorm";
 import Company from "../entities/Company";
 
 class CompanyRepository implements ICompanyRepository {
@@ -33,6 +33,13 @@ class CompanyRepository implements ICompanyRepository {
   async save(data: Company): Promise<Company> {
     const company = await this.ormRepository.save(data);
     return company;
+  }
+
+  async FindByIds(ids: string[]): Promise<Company[]>{
+    const companies = await this.ormRepository.find({
+      id: In(ids)
+    })
+    return companies;
   }
 }
 
