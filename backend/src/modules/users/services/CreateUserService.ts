@@ -3,6 +3,7 @@ import ICompanyRepository from "@modules/companies/repositories/ICompanyReposito
 import AppError from "@shared/errors/AppError";
 import { inject, injectable } from "tsyringe";
 import User from "../infra/typeorm/entities/User";
+import IHashProvider from "../providers/HashProviders/models/IHashProvider";
 import IUserRepository from "../repositories/IUserRespository";
 
 interface IRequest{
@@ -20,7 +21,11 @@ class CreateUserService {
     private userRepository: IUserRepository,
 
     @inject('CompaniesRepository')
-    private companyRepository: ICompanyRepository
+    private companyRepository: ICompanyRepository,
+
+    @inject('HashProvider')
+    private hashProvider: IHashProvider,
+
   ) {
 
   }
@@ -39,11 +44,12 @@ class CreateUserService {
         401,
       )
     }
+    const hashed =await this.hashProvider.generatHash(password);
     const user = await this.userRepository.create({
       companies,
       email,
       name,
-      password
+      password: hashed
     });
 
     return user;
